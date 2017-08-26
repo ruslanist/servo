@@ -216,7 +216,7 @@ enum CompositionRequest {
 }
 
 #[derive(Clone, Copy, Debug, PartialEq)]
-enum ShutdownState {
+pub enum ShutdownState {
     NotShuttingDown,
     ShuttingDown,
     FinishedShuttingDown,
@@ -355,7 +355,7 @@ impl<Window: WindowMethods> IOCompositor<Window> {
             window_rect: window_rect,
             scale: ScaleFactor::new(1.0),
             scale_factor: scale_factor,
-            channel_to_self: state.sender.clone_compositor_proxy(),
+            channel_to_self: state.sender.clone(),
             composition_request: CompositionRequest::NoCompositingNecessary,
             touch_handler: TouchHandler::new(),
             pending_scroll_zoom_events: Vec::new(),
@@ -386,7 +386,7 @@ impl<Window: WindowMethods> IOCompositor<Window> {
         let mut compositor = IOCompositor::new(window, state);
 
         let compositor_proxy_for_webrender = compositor.channel_to_self
-                                                       .clone_compositor_proxy();
+                                                       .clone();
         let render_notifier = RenderNotifier::new(compositor_proxy_for_webrender,
                                                   compositor.constellation_chan.clone());
         compositor.webrender.set_render_notifier(Box::new(render_notifier));
